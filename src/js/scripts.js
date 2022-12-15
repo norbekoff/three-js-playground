@@ -1,44 +1,62 @@
-import * as THREE from 'three';
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
+import * as THREE from "three";
+import { GridHelper } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { GUI } from "dat.gui";
 
-const renderer = new THREE.WebGLRenderer({antialias: true});
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-
-// Sets the color of the background
-renderer.setClearColor(0xFEFEFE);
-
-const scene = new THREE.Scene();
+const renderer = new THREE.WebGLRenderer();
 const camera = new THREE.PerspectiveCamera(
-    45,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
+  45,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
 );
-
-// Sets orbit control to move the camera around
+const scene = new THREE.Scene();
 const orbit = new OrbitControls(camera, renderer.domElement);
 
-// Camera positioning
-camera.position.set(6, 8, 14);
+const AxesHelper = new THREE.AxesHelper(20);
+
+const geometry = new THREE.SphereGeometry(5, 20, 20);
+const material = new THREE.MeshBasicMaterial({
+  color: 0x00ff00,
+  wireframe: true,
+});
+const sphere = new THREE.Mesh(geometry, material);
+
+const grid = new GridHelper(50, 30);
+scene.add(grid);
+
+camera.position.set(4, 1, 20);
 orbit.update();
 
-// Sets a 12 by 12 gird helper
-const gridHelper = new THREE.GridHelper(12, 12);
-scene.add(gridHelper);
+scene.add(sphere);
+scene.add(AxesHelper);
 
-// Sets the x, y, and z axes with each having a length of 4
-const axesHelper = new THREE.AxesHelper(4);
-scene.add(axesHelper);
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.render(scene, camera);
+
+document.body.appendChild(renderer.domElement);
+
+let step = 0;
+let speed = 0.01
 
 function animate() {
-    renderer.render(scene, camera);
+  sphere.rotation.x += 0.001;
+  sphere.rotation.y += 0.0001;
+
+  step += speed
+  sphere.position.y = (10 * Math.abs(Math.sin(step * 1)) + 5)
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
 }
 
-renderer.setAnimationLoop(animate);
+animate();
 
-window.addEventListener('resize', function() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+const options = {
+  sphereColor: "#ffea00",
+};
+
+const gui = new GUI();
+gui.addColor(options, "sphereColor").onChange(function (e) {
+  sphere.material.color.set(e);
 });
