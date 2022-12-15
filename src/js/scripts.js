@@ -16,16 +16,30 @@ const orbit = new OrbitControls(camera, renderer.domElement);
 const AxesHelper = new THREE.AxesHelper(20);
 
 const geometry = new THREE.SphereGeometry(5, 20, 20);
-const material = new THREE.MeshBasicMaterial({
+const material = new THREE.MeshStandardMaterial({
   color: 0x00ff00,
   wireframe: true,
 });
+
+
+const light = new THREE.DirectionalLight( 0xFFFFFF, 2 );
+const lightObj = new THREE.Object3D()
+lightObj.add(light)
+lightObj.position.y = 10
+scene.add(lightObj)
+light.position.set(-50, 0, 0)
+
+const helper = new THREE.DirectionalLightHelper( light);
+
+scene.add(helper)
+
+
 const sphere = new THREE.Mesh(geometry, material);
 
 const grid = new GridHelper(50, 30);
 scene.add(grid);
 
-camera.position.set(4, 1, 20);
+camera.position.set(4, 1, 50);
 orbit.update();
 
 scene.add(sphere);
@@ -37,11 +51,12 @@ renderer.render(scene, camera);
 document.body.appendChild(renderer.domElement);
 
 let step = 0;
-let speed = 0.01
+let speed = 0.01;
 
 function animate() {
   sphere.rotation.x += 0.001;
   sphere.rotation.y += 0.0001;
+  lightObj.rotateY(0.005)
 
   step += speed
   sphere.position.y = (10 * Math.abs(Math.sin(step * 1)) + 5)

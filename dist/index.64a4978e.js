@@ -541,14 +541,22 @@ const scene = new _three.Scene();
 const orbit = new (0, _orbitControls.OrbitControls)(camera, renderer.domElement);
 const AxesHelper = new _three.AxesHelper(20);
 const geometry = new _three.SphereGeometry(5, 20, 20);
-const material = new _three.MeshBasicMaterial({
+const material = new _three.MeshStandardMaterial({
     color: 0x00ff00,
     wireframe: true
 });
+const light = new _three.DirectionalLight(0xFFFFFF, 2);
+const lightObj = new _three.Object3D();
+lightObj.add(light);
+lightObj.position.y = 10;
+scene.add(lightObj);
+light.position.set(-50, 0, 0);
+const helper = new _three.DirectionalLightHelper(light);
+scene.add(helper);
 const sphere = new _three.Mesh(geometry, material);
 const grid = new (0, _three.GridHelper)(50, 30);
 scene.add(grid);
-camera.position.set(4, 1, 20);
+camera.position.set(4, 1, 50);
 orbit.update();
 scene.add(sphere);
 scene.add(AxesHelper);
@@ -560,6 +568,7 @@ let speed = 0.01;
 function animate() {
     sphere.rotation.x += 0.001;
     sphere.rotation.y += 0.0001;
+    lightObj.rotateY(0.005);
     step += speed;
     sphere.position.y = 10 * Math.abs(Math.sin(step * 1)) + 5;
     renderer.render(scene, camera);
