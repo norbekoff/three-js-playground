@@ -1,9 +1,3 @@
-# ThreeBoilerplate
-
-This is the boilerplate that I'm using for my Three.js tutorials.
-
-Wanna use it? okay then just follow these simple steps:
-
 1. Clone the repository;
 2. Open the folder in Visual Studio Code;
 3. Open the terminal and type this command: npm install
