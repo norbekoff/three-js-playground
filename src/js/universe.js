@@ -33,6 +33,7 @@ renderLight();
 addStarsToBackground();
 renderSun();
 renderEarth();
+light.target = earth; // Point the light at the earth
 animate();
 
 document.body.appendChild(renderer.domElement);
@@ -70,6 +71,8 @@ function renderSun() {
 function renderLight() {
   light = new THREE.DirectionalLight(0xffffff);
   light.position.y = 1;
+  light.intensity = 2;
+  light.position.set(0, 5, 0);
   helper = new THREE.DirectionalLightHelper(light, 5);
   scene.add(light);
   scene.add(helper);
@@ -79,7 +82,7 @@ function renderEarth() {
   const earthTexture = new THREE.TextureLoader().load(earthPic);
 
   const earthGeo = new THREE.SphereGeometry(2);
-  const earthMaterial = new THREE.MeshBasicMaterial({ map: earthTexture });
+  const earthMaterial = new THREE.MeshLambertMaterial({ map: earthTexture });
 
   earthObj = new THREE.Object3D();
   earth = new THREE.Mesh(earthGeo, earthMaterial);
